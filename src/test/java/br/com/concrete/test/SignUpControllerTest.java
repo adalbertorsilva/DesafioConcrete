@@ -113,7 +113,7 @@ public class SignUpControllerTest {
 	public void aPersistedUserMustHaveAModifiedDate(){
 		User user = new User();
 		user.setName("João da Silva");
-		user.setEmail("joao5@silva.org");
+		user.setEmail("joao6@silva.org");
 		user.setPassword("hunter2");
 		user.addPhone(new Phone(987654321, 21));
 		
@@ -127,8 +127,32 @@ public class SignUpControllerTest {
 	public void userMustHaveAName(){
 		
 		User user = new User();
-		user.setEmail("joao5@silva.org");
+		user.setEmail("joao7@silva.org");
 		user.setPassword("hunter2");
+		user.addPhone(new Phone(987654321, 21));
+		
+		ResponseEntity<ErrorResponse> responseEntity = testRestTemplate.postForEntity("/signup", user, ErrorResponse.class);
+		
+		assertNotNull(responseEntity.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY));
+	}
+	
+	@Test @Transactional
+	public void userMustHaveAnEmail(){
+		User user = new User();
+		user.setName("João da Silva");
+		user.setPassword("hunter2");
+		user.addPhone(new Phone(987654321, 21));
+		
+		ResponseEntity<ErrorResponse> responseEntity = testRestTemplate.postForEntity("/signup", user, ErrorResponse.class);
+		
+		assertNotNull(responseEntity.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY));
+	}
+	
+	@Test @Transactional
+	public void userMustHaveAPassword(){
+		User user = new User();
+		user.setName("João da Silva");
+		user.setEmail("joao6@silva.org");
 		user.addPhone(new Phone(987654321, 21));
 		
 		ResponseEntity<ErrorResponse> responseEntity = testRestTemplate.postForEntity("/signup", user, ErrorResponse.class);
