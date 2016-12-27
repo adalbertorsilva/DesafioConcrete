@@ -96,20 +96,6 @@ public class SignUpControllerTest {
 	}
 	
 	@Test @Transactional
-	public void aPersistedUserMustHaveALastLoginDate(){
-		User user = new User();
-		user.setName("João da Silva");
-		user.setEmail("joao5@silva.org");
-		user.setPassword("hunter2");
-		user.addPhone(new Phone(987654321, 21));
-		
-		ResponseEntity<User> responseEntity = testRestTemplate.postForEntity("/signup", user, User.class);
-		User createdUser = responseEntity.getBody();
-		
-		assertNotNull(createdUser.getLastLogin());
-	}
-	
-	@Test @Transactional
 	public void aPersistedUserMustHaveAModifiedDate(){
 		User user = new User();
 		user.setName("João da Silva");

@@ -1,10 +1,10 @@
 package br.com.concrete.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,23 +92,20 @@ public class LoginControllerTest {
 	}
 	
 	
-//	@Test @Transactional
-//	public void mustUpdateLastLoginWhenLogin() throws ParseException{
-//		User user = new User();
-//		user.setName("João da Silva");
-//		user.setEmail("joao4@silva.org");
-//		user.setPassword("hunter2");
-//		user.addPhone(new Phone(987654321, 21));
-//		
-//		SimpleDateFormat january2001 = new SimpleDateFormat("dd/MM/yyyy");
-//		user.setLastLogin(january2001.parse("01/01/2001"));
-//		userRepository.save(user);
-//		
-//		ResponseEntity<User> response = testRestTemplate.postForEntity("/login", new Login("joao3@silva.org", "hunter2"), User.class);
-//		
-//		assertTrue(response.getStatusCode().equals(HttpStatus.OK));
-//		assertFalse(Utils.isNull(response.getBody()));
-//		assertTrue(response.getBody().getLastLogin().equals(new Date()));
-//	}
+	@Test @Transactional
+	public void mustUpdateLastLoginWhenLogin() throws ParseException{
+		User user = new User();
+		user.setName("João da Silva");
+		user.setEmail("joao4@silva.org");
+		user.setPassword("hunter2");
+		user.addPhone(new Phone(987654321, 21));
+		
+		testRestTemplate.postForEntity("/signup", user, User.class);
+		ResponseEntity<User> response = testRestTemplate.postForEntity("/login", new Login("joao4@silva.org", "hunter2"), User.class);
+		
+		assertTrue(response.getStatusCode().equals(HttpStatus.OK));
+		assertFalse(Utils.isNull(response.getBody()));
+		assertNotNull(response.getBody().getLastLogin());
+	}
 	
 }

@@ -96,7 +96,6 @@ public class User {
 		
 		setCreated(today);
 		setToken(UUID.randomUUID().toString().replaceAll("-", ""));
-		setLastLogin(today);
 		setModified(today);
 	}
 }

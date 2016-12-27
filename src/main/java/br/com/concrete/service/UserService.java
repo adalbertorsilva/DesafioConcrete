@@ -1,14 +1,20 @@
 package br.com.concrete.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import br.com.concrete.domain.Login;
 import br.com.concrete.domain.User;
 import br.com.concrete.exception.DuplicatedEmailException;
+import br.com.concrete.exception.ExpiredTokenException;
 import br.com.concrete.exception.LoginException;
 import br.com.concrete.exception.MissingFieldException;
+import br.com.concrete.exception.UnauthorizedException;
 import br.com.concrete.repository.UserRepository;
 import br.com.concrete.utils.Utils;
 
@@ -30,6 +36,16 @@ public class UserService {
 		return  getUserByLogin(login);
 	}
 	
+	public User getUserForProfile(String token, Long id) throws UnauthorizedException, ExpiredTokenException {
+		
+		User user;
+		validateTokenEmptyness(token);
+		user = userRepository.findOne(id);
+		validateUserToken(token, user);
+		validateLastLogin(user);
+		return null;
+	}
+
 	private void validateFieldsEmptyness(Object... fields) throws MissingFieldException{
 		if(Utils.anyNull(fields) || 
 				Utils.anyEmpty(fields)){
@@ -50,7 +66,29 @@ public class UserService {
 			throw new LoginException();
 		}
 		
-		return user;
+		user.setLastLogin(new Date());
+		return userRepository.save(user);
 	}
 	
+	private void validateTokenEmptyness(String token) throws UnauthorizedException {
+		if(Utils.anyNull(token) || 
+				Utils.anyEmpty(token)){
+			throw new UnauthorizedException();
+		}
+	}
+	
+	private void validateUserToken(String token, User user) throws UnauthorizedException {
+		if(!user.getToken().equals(token)){
+			throw new UnauthorizedException();
+		}
+	}
+	
+	private void validateLastLogin(User user) throws ExpiredTokenException {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime lastLoginTime = LocalDateTime.ofInstant(user.getLastLogin().toInstant(), ZoneId.systemDefault());
+		
+		if(lastLoginTime.until(now, ChronoUnit.MINUTES) > 30){
+			throw new ExpiredTokenException();
+		}
+	}
 }
