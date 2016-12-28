@@ -25,7 +25,6 @@ public class ProfileController {
 
 	@RequestMapping(method=RequestMethod.GET, value="{id}")
 	public ResponseEntity<User> getProfile(@RequestHeader("token") String token, @PathVariable Long id) throws Exception{
-
 		ResponseEntity<User> responseUser = new ResponseEntity<User>(userService.getUserForProfile(token, id), HttpStatus.OK);
 		return responseUser;
 	}

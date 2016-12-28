@@ -1,8 +1,7 @@
 package br.com.concrete.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.junit.Test;
